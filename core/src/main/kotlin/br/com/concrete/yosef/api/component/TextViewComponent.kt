@@ -8,6 +8,16 @@ import br.com.concrete.yosef.OnActionListener
 import br.com.concrete.yosef.api.property.DynamicPropertyCommand
 import br.com.concrete.yosef.api.property.id.IdCommand
 import br.com.concrete.yosef.api.property.id.IdCommand.Companion.ID
+import br.com.concrete.yosef.api.property.span.BackgroundColorSpanPropertyCommand
+import br.com.concrete.yosef.api.property.span.BackgroundColorSpanPropertyCommand.Companion.SPAN_BG_COLOR
+import br.com.concrete.yosef.api.property.span.ClickableSpanPropertyCommand
+import br.com.concrete.yosef.api.property.span.ClickableSpanPropertyCommand.Companion.SPAN_CLICKABLE
+import br.com.concrete.yosef.api.property.span.ForegroundColorSpanPropertyCommand
+import br.com.concrete.yosef.api.property.span.ForegroundColorSpanPropertyCommand.Companion.SPAN_FG_COLOR
+import br.com.concrete.yosef.api.property.span.RelativeSizeSpanPropertyCommand
+import br.com.concrete.yosef.api.property.span.RelativeSizeSpanPropertyCommand.Companion.SPAN_RELATIVE_SIZE
+import br.com.concrete.yosef.api.property.span.UnderlineSpanPropertyCommand
+import br.com.concrete.yosef.api.property.span.UnderlineSpanPropertyCommand.Companion.SPAN_UNDERLINE
 import br.com.concrete.yosef.api.property.text.TextColorCommand
 import br.com.concrete.yosef.api.property.text.TextColorCommand.Companion.TEXT_COLOR
 import br.com.concrete.yosef.api.property.text.TextCommand
@@ -30,6 +40,11 @@ class TextViewComponent : Component {
 
     private val commands: Map<String, DynamicPropertyCommand> = mapOf(
         TEXT to TextCommand(),
+        SPAN_BG_COLOR to BackgroundColorSpanPropertyCommand(),
+        SPAN_FG_COLOR to ForegroundColorSpanPropertyCommand(),
+        SPAN_RELATIVE_SIZE to RelativeSizeSpanPropertyCommand(),
+        SPAN_UNDERLINE to UnderlineSpanPropertyCommand(),
+        SPAN_CLICKABLE to ClickableSpanPropertyCommand(),
         TEXT_COLOR to TextColorCommand(),
         TEXT_SIZE to TextSizeCommand(),
         ID to IdCommand(),
@@ -41,6 +56,10 @@ class TextViewComponent : Component {
         dynamicProperties: List<DynamicProperty>,
         actionListener: OnActionListener?
     ) {
+        val clickableSpanProperty =
+            (commands[SPAN_CLICKABLE] as ClickableSpanPropertyCommand)
+        clickableSpanProperty.actionListener = actionListener
+
         dynamicProperties.forEach {
             commands[it.name]?.apply(view, it)
         }

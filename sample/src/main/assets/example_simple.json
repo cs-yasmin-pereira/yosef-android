@@ -13,6 +13,31 @@
         "value": "#4A4A4A"
       },
       {
+        "name": "spanBgColor",
+        "type": "string",
+        "value": "0,4,#ff0065"
+      },
+      {
+        "name": "spanFgColor",
+        "type": "string",
+        "value": "0,4,#ffffff"
+      },
+      {
+        "name": "spanRelativeSize",
+        "type": "string",
+        "value": "0,4,1.5"
+      },
+      {
+        "name": "spanUnderline",
+        "type": "string",
+        "value": "0,4"
+      },
+      {
+        "name": "spanClickable",
+        "type": "string",
+        "value": "0,4,helloFromHell"
+      },
+      {
         "name": "textSize",
         "type": "dimen",
         "value": "30"
