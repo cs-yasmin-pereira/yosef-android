@@ -12,7 +12,10 @@
                 android:name=".activities.RadioGroupActivity"/>
         <activity
                 android:theme="@style/Theme.AppCompat.Light"
-                android:name=".activities.AnimationActivity"/>
+                android:name=".activities.FrameActivity" />
+        <activity
+            android:theme="@style/Theme.AppCompat.Light"
+            android:name=".activities.ElementListActivity" />
     </application>
 
 </manifest>

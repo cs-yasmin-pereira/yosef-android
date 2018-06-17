@@ -2,21 +2,17 @@ package br.com.concrete.yosef.api
 
 import android.content.Context
 import android.view.View
-import android.view.ViewGroup
 import br.com.concrete.yosef.OnActionListener
 import br.com.concrete.yosef.api.DynamicViewCreator.Builder
-import br.com.concrete.yosef.api.component.ButtonComponent
+import br.com.concrete.yosef.api.component.*
 import br.com.concrete.yosef.api.component.ButtonComponent.Companion.BUTTON_TYPE
-import br.com.concrete.yosef.api.component.Component
-import br.com.concrete.yosef.api.component.ElementGroupComponent
 import br.com.concrete.yosef.api.component.ElementGroupComponent.Companion.ELEMENT_GROUP
-import br.com.concrete.yosef.api.component.RadioButtonComponent
+import br.com.concrete.yosef.api.component.ElementListComponent.Companion.ELEMENT_LIST
+import br.com.concrete.yosef.api.component.FrameComponent.Companion.FRAME
 import br.com.concrete.yosef.api.component.RadioButtonComponent.Companion.RADIO_BUTTON
-import br.com.concrete.yosef.api.component.RadioGroupButtonComponent
 import br.com.concrete.yosef.api.component.RadioGroupButtonComponent.Companion.RADIO_GROUP_BUTTON
-import br.com.concrete.yosef.api.component.TextFieldComponent
+import br.com.concrete.yosef.api.component.SeparatorComponent.Companion.SEPARATOR
 import br.com.concrete.yosef.api.component.TextFieldComponent.Companion.TEXT_FIELD
-import br.com.concrete.yosef.api.component.TextViewComponent
 import br.com.concrete.yosef.api.component.TextViewComponent.Companion.TEXT_TYPE
 import br.com.concrete.yosef.entity.DynamicComponent
 import br.com.concrete.yosef.fromJson
@@ -32,8 +28,7 @@ class DynamicViewCreator(
 ) {
 
     /**
-     * This method creates a list of [DynamicComponent] by the passed json and calls
-     * [addChildrenRecursively] method to add them to the parent view
+     * This method creates a view from a list of [DynamicComponent] based on the [json]
      *
      * @param context [Context] needed to create views
      * @param json formatted json according with the library protocol. This json will have
@@ -48,54 +43,19 @@ class DynamicViewCreator(
     ): View {
 
         val componentSpec = gson.fromJson<DynamicComponent>(json)
-        val component = components[componentSpec.type] ?: throw IllegalStateException("There are no components registered " +
-            "in this ViewCreator that can render ${componentSpec.type}")
+        val component = components[componentSpec.type]
+            ?: throw IllegalStateException("There are no components registered " +
+                "in this ViewCreator that can render ${componentSpec.type}")
 
         val parentView = component.createView(context)
 
         componentSpec.children?.let {
-            if (parentView !is ViewGroup) {
-                throw IllegalStateException("Can not add children to component " +
-                    "with type ${componentSpec.type}. ${parentView.javaClass.name} is " +
-                    "not a ViewGroup.")
-            }
-
-            it.forEach { addChildrenRecursively(parentView, it, listener) }
+            component.addComponentsAsChildren(it, parentView, components, listener)
         }
 
         component.applyProperties(parentView, componentSpec.dynamicProperties, listener)
 
         return parentView
-    }
-
-    /**
-     * Method that adds components to the parent, possibly also adding children
-     * of the created components
-     *
-     * @param topLevelViewGroup the parent who will group the components
-     * @param childComponent the component that should be created and added in the parent
-     * @param listener is the responsible for calling events that
-     * are related with components actions
-     */
-    private fun addChildrenRecursively(
-        topLevelViewGroup: ViewGroup,
-        childComponent: DynamicComponent?,
-        listener: OnActionListener? = null
-    ) {
-        if (childComponent == null) return
-
-        if (components[childComponent.type] == null) {
-            throw IllegalStateException("There are no components registered " +
-                "in this ViewCreator that can render ${childComponent.type}")
-        }
-
-        val component = components[childComponent.type]!!
-        val view = component.createView(topLevelViewGroup.context)
-
-        childComponent.children?.forEach { addChildrenRecursively(view as ViewGroup, it) }
-        component.applyProperties(view, childComponent.dynamicProperties, listener)
-
-        topLevelViewGroup.addView(view)
     }
 
     /**
@@ -115,7 +75,10 @@ class DynamicViewCreator(
                 TEXT_FIELD to TextFieldComponent(),
                 ELEMENT_GROUP to ElementGroupComponent(),
                 RADIO_BUTTON to RadioButtonComponent(),
-                RADIO_GROUP_BUTTON to RadioGroupButtonComponent()
+                RADIO_GROUP_BUTTON to RadioGroupButtonComponent(),
+                FRAME to FrameComponent(),
+                SEPARATOR to SeparatorComponent(),
+                ELEMENT_LIST to ElementListComponent()
             )
         }
 
@@ -139,6 +102,20 @@ class DynamicViewCreator(
          */
         fun build(): DynamicViewCreator {
             return DynamicViewCreator(components, gson)
+        }
+    }
+
+    companion object {
+        internal fun getComponentByType(
+            dynamicComponent: DynamicComponent,
+            components: Map<String, Component>
+        ): Component {
+            if (components[dynamicComponent.type] == null) {
+                throw IllegalStateException("There are no components registered " +
+                    "in this ViewCreator that can render ${dynamicComponent.type}")
+            }
+
+            return components[dynamicComponent.type]!!
         }
     }
 }

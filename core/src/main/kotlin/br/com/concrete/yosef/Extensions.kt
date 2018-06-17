@@ -9,16 +9,18 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlin.math.roundToInt
 
-inline fun <reified T> Gson.fromJson(json: String) =
+inline fun <reified T> Gson.fromJson(json: String): T =
     this.fromJson<T>(json, object : TypeToken<T>() {}.type)!!
 
 inline fun supportsLollipop(code: () -> Unit): Boolean {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         code()
-        return true
+        true
+    } else {
+        false
     }
-    return false
 }
 
 fun Float.dp(context: Context): Float {
@@ -28,7 +30,11 @@ fun Float.dp(context: Context): Float {
 }
 
 fun Int.dp(context: Context): Int {
-    return this.toFloat().dp(context).toInt()
+    return this.toFloat().dp(context).roundToInt()
+}
+
+infix fun Boolean.orElse(block: () -> Unit) {
+    if (this.not()) block()
 }
 
 @VisibleForTesting
@@ -50,4 +56,18 @@ fun View.layoutAndAssert(action: (view: View) -> Unit) {
         }
     })
     layout(0, 0, layoutParams?.width ?: MATCH_PARENT, layoutParams?.height ?: WRAP_CONTENT)
+}
+
+
+@VisibleForTesting
+fun isLollipopOrGreater(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+
+fun String.canBeConvertedToInt(): Boolean {
+    return try {
+        this.toInt()
+        true
+    } catch (e: NumberFormatException) {
+        e.printStackTrace()
+        false
+    }
 }
