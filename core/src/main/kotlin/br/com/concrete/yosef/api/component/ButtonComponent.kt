@@ -11,10 +11,16 @@ import br.com.concrete.yosef.api.property.color.BackgroundColorCommand
 import br.com.concrete.yosef.api.property.color.BackgroundColorCommand.Companion.BACKGROUND_COLOR
 import br.com.concrete.yosef.api.property.id.IdCommand
 import br.com.concrete.yosef.api.property.id.IdCommand.Companion.ID
+import br.com.concrete.yosef.api.property.size.HeightCommand
+import br.com.concrete.yosef.api.property.size.HeightCommand.Companion.HEIGHT_TYPE
+import br.com.concrete.yosef.api.property.size.WidthCommand
+import br.com.concrete.yosef.api.property.size.WidthCommand.Companion.WIDTH_TYPE
 import br.com.concrete.yosef.api.property.spacing.MarginPropertyCommand
 import br.com.concrete.yosef.api.property.spacing.MarginPropertyCommand.Companion.MARGIN
 import br.com.concrete.yosef.api.property.spacing.PaddingPropertyCommand
 import br.com.concrete.yosef.api.property.spacing.PaddingPropertyCommand.Companion.PADDING
+import br.com.concrete.yosef.api.property.text.TextAlignmentCommand
+import br.com.concrete.yosef.api.property.text.TextAlignmentCommand.Companion.TEXT_ALIGNMENT
 import br.com.concrete.yosef.api.property.text.TextColorCommand
 import br.com.concrete.yosef.api.property.text.TextColorCommand.Companion.TEXT_COLOR
 import br.com.concrete.yosef.api.property.text.TextCommand
@@ -41,7 +47,10 @@ class ButtonComponent : Component {
         BACKGROUND_COLOR to BackgroundColorCommand(),
         PADDING to PaddingPropertyCommand(),
         MARGIN to MarginPropertyCommand(),
-        ID to IdCommand()
+        ID to IdCommand(),
+        HEIGHT_TYPE to HeightCommand(),
+        WIDTH_TYPE to WidthCommand(),
+        TEXT_ALIGNMENT to TextAlignmentCommand()
     )
 
     override fun applyProperties(

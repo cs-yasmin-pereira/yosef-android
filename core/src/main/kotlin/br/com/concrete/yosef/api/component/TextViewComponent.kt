@@ -13,6 +13,8 @@ import br.com.concrete.yosef.api.property.spacing.MarginPropertyCommand
 import br.com.concrete.yosef.api.property.spacing.MarginPropertyCommand.Companion.MARGIN
 import br.com.concrete.yosef.api.property.spacing.PaddingPropertyCommand
 import br.com.concrete.yosef.api.property.spacing.PaddingPropertyCommand.Companion.PADDING
+import br.com.concrete.yosef.api.property.text.TextAlignmentCommand
+import br.com.concrete.yosef.api.property.text.TextAlignmentCommand.Companion.TEXT_ALIGNMENT
 import br.com.concrete.yosef.api.property.text.TextColorCommand
 import br.com.concrete.yosef.api.property.text.TextColorCommand.Companion.TEXT_COLOR
 import br.com.concrete.yosef.api.property.text.TextCommand
@@ -40,7 +42,8 @@ class TextViewComponent : Component {
         ID to IdCommand(),
         PADDING to PaddingPropertyCommand(),
         MARGIN to MarginPropertyCommand(),
-        TEXT_STYLE to TextStyleCommand()
+        TEXT_STYLE to TextStyleCommand(),
+        TEXT_ALIGNMENT to TextAlignmentCommand()
     )
 
     override fun applyProperties(

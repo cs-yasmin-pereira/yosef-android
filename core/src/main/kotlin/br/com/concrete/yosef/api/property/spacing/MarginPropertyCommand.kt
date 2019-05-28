@@ -26,11 +26,21 @@ class MarginPropertyCommand : DynamicPropertyCommand {
 
     override fun apply(view: View, dynamicProperty: DynamicProperty) {
         val layoutParams = view.layoutParams
-
-        val (left, top, right, bottom) = generateMarginList(dynamicProperty, view)
-
         if (layoutParams is ViewGroup.MarginLayoutParams) {
-            layoutParams.setMargins(left, top, right, bottom)
+            when (dynamicProperty.type.toLowerCase()) {
+                "margin" -> {
+                    val (left, top, right, bottom) = generateMarginList(dynamicProperty, view)
+                    layoutParams.setMargins(left, top, right, bottom)
+                }
+                "left" -> layoutParams.leftMargin =
+                    convertValueToDp(dynamicProperty.value, view.context)
+                "right" -> layoutParams.rightMargin =
+                    convertValueToDp(dynamicProperty.value, view.context)
+                "top" -> layoutParams.topMargin =
+                    convertValueToDp(dynamicProperty.value, view.context)
+                "bottom" -> layoutParams.bottomMargin =
+                    convertValueToDp(dynamicProperty.value, view.context)
+            }
         }
     }
 
@@ -39,8 +49,10 @@ class MarginPropertyCommand : DynamicPropertyCommand {
             val split = dynamicProperty.value.split(",")
 
             if (split.size != 4) {
-                throw IllegalArgumentException("The margin value must be an array of 4 items or " +
-                    "a single number representing the values of all corners")
+                throw IllegalArgumentException(
+                    "The margin value must be an array of 4 items or " +
+                        "a single number representing the values of all corners"
+                )
             }
 
             split.map {
@@ -56,8 +68,10 @@ class MarginPropertyCommand : DynamicPropertyCommand {
         try {
             return valueInString.trim().toInt().dp(context)
         } catch (e: NumberFormatException) {
-            throw IllegalArgumentException("The value $valueInString is not a valid margin" +
-                " value, it needs to be a number")
+            throw IllegalArgumentException(
+                "The value $valueInString is not a valid margin" +
+                    " value, it needs to be a number"
+            )
         }
     }
 }
